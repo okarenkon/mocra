@@ -1,14 +1,19 @@
 #include <cstdio>
 #include "MultiPageImageReader.h"
 
-MultiPageImageReader::MultiPageImageReader(const std::string& fileName)
-	: m_fileName(fileName), m_pTiff(NULL), m_pageCount(0)
+//! コンストラクタ
+MultiPageImageReader::MultiPageImageReader(
+ const std::string& fileName)		//!> 画像ファイル名
+	: m_fileName(fileName),
+	  m_pTiff(NULL),
+	  m_pageCount(0)
 {
 	//とりあえずTIFFファイル前提で開いておく
 	//(TIFFファイルかどうかの判断をlibtiffに任せたいため)
 	m_pTiff = ::TIFFOpen(fileName.c_str(), "r");
 }
 
+//! デストラクタ
 MultiPageImageReader::~MultiPageImageReader()
 {
 	if (m_pTiff != NULL) {
@@ -16,7 +21,9 @@ MultiPageImageReader::~MultiPageImageReader()
 	}
 }
 
-cv::Mat MultiPageImageReader::read(bool* eof/* = NULL*/)
+//! 画像読み込み
+cv::Mat MultiPageImageReader::read(
+ bool* eof/* = NULL*/)				//!> EOFフラグ
 {
 	if (eof != NULL) {
 		*eof = false;

@@ -5,18 +5,24 @@
 #include <opencv2/opencv.hpp>
 #include <tiffio.h>
 
+//! マルチページ画像読み込みクラス
 class MultiPageImageReader
 {
 public:
-	MultiPageImageReader(const std::string& fileName);
+	//! コンストラクタ
+	MultiPageImageReader(
+	 const std::string& fileName);	//!> 画像ファイル名
+	//! デストラクタ
 	virtual ~MultiPageImageReader();
 
-	cv::Mat read(bool* eof = NULL);
+	//! 画像読み込み
+	cv::Mat read(
+	 bool* eof = NULL);				//!> EOFフラグ
 
 private:
-	std::string	m_fileName;		//ファイル名
-	TIFF*		m_pTiff;		//TIFFファイル以外はNULL
-	int			m_pageCount;	//ページカウンタ
+	std::string	m_fileName;		//!> ファイル名
+	TIFF*		m_pTiff;		//!> TIFFイメージ(TIFFファイル以外はNULL)
+	int			m_pageCount;	//!> ページカウンタ
 };
 
 #endif	//MULTIPAGEIMAGEREADER_H
