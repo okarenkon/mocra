@@ -82,11 +82,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LineDetector.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MultiPageImageReader.cpp" />
+    <ClCompile Include="SlantCorrector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Labeling.h" />
+    <ClInclude Include="LineDetector.h" />
     <ClInclude Include="MultiPageImageReader.h" />
+    <ClInclude Include="SlantCorrector.h" />
+    <ClInclude Include="TRange.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

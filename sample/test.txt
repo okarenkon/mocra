@@ -1,0 +1,18 @@
+光学文字認識
+（光学式文字読取装置から転送）
+
+光学文字認識（こうがくもじにんしき、英: optical character recognition）は、活字の文書の画像（通常イメージスキャナーで取り込まれる）をコンピュータが編集できる形式（文字コードの列）に変換するソフトウェアである。一般にOCRと略記される。OCRは、人工知能やマシンビジョンの研究分野として始まった。研究は続けられているが、OCRの中心はその実装と応用に移っている。紙に印刷された文書をデジタイズし、よりコンパクトな形で記録するのに必要とされる。さらに、文字コードに変換することで機械翻訳や音声合成の入力にも使えるようになり、テキストマイニングも可能となる。研究分野としては、パターン認識、人工知能、コンピュータビジョンが対応する。
+
+（鏡やレンズといった光学技術を使った）光学文字認識と（スキャナーとアルゴリズムによる）デジタル文字認識は本来別の領域と考えられていた。光学技術として生き残った部分が非常に少ないため、光学文字認識という言葉は現在ではデジタル文字認識を含むものとみなされている。
+
+初期のシステムは特定の書体を読むための「トレーニング」が必要であった（事前にその書体のサンプルを読ませることを意味する）。現在では、ほとんどの書体を高い識字率で変換することが可能である。いくつかのシステムでは読み込まれた画像からそれとほぼ同じになるようフォーマットされた出力（例えばワードプロセッサのファイルのようなもの）を生成することが可能であり、中には画像などの文書以外の部分が含まれていても正しく認識するものもある。
+
+
+
+
+Optical character recognition
+From Wikipedia, the free encyclopedia 
+
+Optical character recognition, usually abbreviated to OCR, is the mechanical or electronic conversion of scanned or photographed images of typewritten or printed text into machine-encoded/computer-readable text. It is widely used as a form of data entry from some sort of original paper data source, whether passport documents, invoices, bank statement, receipts, business card, mail, or any number of printed records. It is a common method of digitizing printed texts so that they can be electronically edited, searched, stored more compactly, displayed on-line, and used in machine processes such as machine translation, text-to-speech, key data extraction and text mining. OCR is a field of research in pattern recognition, artificial intelligence and computer vision.
+
+Early versions needed to be programmed with images of each character, and worked on one font at a time. "Intelligent" systems with a high degree of recognition accuracy for most fonts are now common. Some commercial systems are capable of reproducing formatted output that closely approximates the original scanned page including images, columns and other non-textual components.
