@@ -141,7 +141,7 @@ double SlantCorrector::detectSlant(
 		}
 		ave = ave / lines.size();
 
-		//•Ï“®ŒW”‚ğ‹‚ß‚é
+		//•W€•Î·‚ğ‹‚ß‚é
 		float sigma = 0.0;
 		for (size_t i = 0; i < lines.size(); i++) {
 			sigma += pow(lines[i][1] - ave, (float)2.0);
