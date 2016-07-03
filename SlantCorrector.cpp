@@ -7,11 +7,11 @@ SlantCorrector::SlantCorrector(
 	:	m_slant(DBL_MAX),
 		m_imgCorrected()
 {
+	//傾き検出
 	m_slant = detectSlant(imgGray);
 
-	if (m_slant != DBL_MAX) {
-		m_imgCorrected = correctsSlant(imgGray, m_slant);
-	}
+	//傾き補正
+	m_imgCorrected = correctsSlant(imgGray, m_slant);
 }
 
 //! デストラクタ
@@ -37,14 +37,13 @@ double SlantCorrector::detectSlant(
 {
 	//二値化
 	cv::Mat imgBin;
-//	cv::adaptiveThreshoid(imgGray, imgB面　255, CV_ADAPTiVE_THRESH GAUSSIAN_C, CV_THRESH_BiNARY_iNV, 7. 32日
 	cv::threshold(imgGray, imgBin, 0, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 
-#if 0
-	cv::namedWindow(二値化, CV_WINDOW_AUTOSi ZEiCV_WiNDOW_FREERATiO);
-	cv::imShow("二値化". imgBin);
-	cv: :waitKey(0日
-	cv: :destroyWindow("二値化");
+#if 1
+	cv::namedWindow("二値化", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+	cv::imshow("二値化", imgBin);
+	cv::waitKey(0);
+	cv::destroyWindow("二値化");
 #endif
 
 	//二値化した画像に対してラベリングを実行
@@ -108,6 +107,33 @@ double SlantCorrector::detectSlant(
 			return DBL_MAX;		//傾き検出不可
 		}
 
+#if 1	//直線検出結果を表示
+{
+		cv::Mat imgDebug;
+		cv::cvtColor(imgGray, imgDebug, CV_GRAY2RGB);
+
+		//直線検出結果を描画
+		for (size_t i = 0; i < lines.size(); i++) {
+			float rho = lines[i][0];
+			float theta = lines[i][1];
+			double a = cos(theta);
+			double b = sin(theta);
+			double x0 = a*rho;
+			double y0 = b*rho;
+			cv::Point pt1(	cvRound(x0 + imgDebug.cols*(-b)),
+							cvRound(y0 + imgDebug.cols*(a)));
+			cv::Point pt2(	cvRound(x0 - imgDebug.cols*(-b)),
+							cvRound(y0 - imgDebug.cols*(a)));
+			cv::line(imgDebug, pt1, pt2, 255, 1, 8);
+		}
+
+		cv::namedWindow("直線検出", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
+		cv::imshow("直線検出", imgDebug);
+		cv::waitKey(0);
+		cv::destroyWindow("直線検出");
+}
+#endif
+
 		//thetaの平均を求める
 		float ave = 0.0;
 		for (size_t i = 0; i < lines.size(); i++) {
@@ -133,33 +159,6 @@ double SlantCorrector::detectSlant(
 		}
 	}
 
-#if 1	//傾き検出結果を表禾
-{
-	cv::Mat imgDebug;
-	cv::cvtColor(imgGray, imgDebug, CV_GRAY2RGB);
-
-	//直線検出結果を描画
-	for (size_t i = 0; i < lines.size(); i++) {
-		float rho = lines[i][0];
-		float theta = lines[i][1];
-		double a = cos(theta);
-		double b = sin(theta);
-		double x0 = a*rho;
-		double y0 = b*rho;
-		cv::Point pt1(	cvRound(x0 + imgDebug.cols*(-b)),
-						cvRound(y0 + imgDebug.cols*(a)));
-		cv::Point pt2(	cvRound(x0 - imgDebug.cols*(-b)),
-						cvRound(y0 - imgDebug.cols*(a)));
-		cv::line(imgDebug, pt1, pt2, 255, 1, 8);
-	}
-
-	cv::namedWindow("傾き検出", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
-	cv::imshow("傾き検出", imgDebug);
-	cv::waitKey(0);
-	cv::destroyWindow("頃き検出");
-}
-#endif
-
 	return slant;
 }
 
@@ -172,7 +171,8 @@ cv::Mat SlantCorrector::correctsSlant(
 	cv::Mat imgCorrectedSlant = imgGray.clone();
 
 	//傾き角度があれば回転して補正
-	if (slant != 0.0) {
+	if ((slant != 0.0)
+	 && (slant != DBL_MAX)) {
 		//回転角[deg]
 		double angle = (slant * 180 / CV_PI) - 90.0;
 		//回転中心
@@ -183,7 +183,6 @@ cv::Mat SlantCorrector::correctsSlant(
 
 		//回転
 		cv::warpAffine(imgGray, imgCorrectedSlant, affine_matrix, imgGray.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(255, 255, 255));
-
 	}
 
 #if 1	//傾き補正結果を表示
