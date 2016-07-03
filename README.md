@@ -1,7 +1,11 @@
 mocra
 =====
 
-ビルドするには以下のライブラリが必要です。
+以下のライブラリ、クラスを使用しています。
+
+Labeling.h
+http://imura-lab.org/products/labeling/
+Copyright (c) 2010, IMURA Masataka
 
 OpenCV 2.4.9
 https://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.4.9/
