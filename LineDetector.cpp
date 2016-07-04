@@ -30,7 +30,6 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 
 	//二値化
 	cv::Mat imgBin;
-//	cv::adaptiveThreshoid(imgGray, imgBin, 255, CV_ADAPTIVE_THRESH_GAUSSiAN_C, CV_THRESH_BiNARY_iNV, 7, 32);
 	cv::threshold(imgGray, imgBin, 0, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 
 #if 0
@@ -60,19 +59,19 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 	//高さの降順にソート
 	std::sort(rects.begin(), rects.end(), GreaterRectHeight());
 
-	//横方向に重なっている矩形を統合していく
+	//縦の範囲が重なっている矩形を横方向に統合していく
 	while (! rects.empty()) {
 		size_t count = 0;	//矩形を統合した回数
 
 		for (size_t i = 0; i < rects.size() - 1; i++) {
-			for (size_t j = i+1; j < rects.size(); j++) {
+			for (size_t j = i + 1; j < rects.size(); j++) {
 				TRange<double> r1(rects[i].y, rects[i].y + rects[i].height);	//大きい矩形の縦の範囲
 				TRange<double> r2(rects[j].y, rects[j].y + rects[j].height);	//小さい矩形の縦の範囲
-				TRange<double> rc = r1.intersected(r2);						//縦の範囲が重なっている範囲
+				TRange<double> rc = r1.intersected(r2);							//縦の範囲が重なっている範囲
 		
 				if (! rc.isNull()) {
 					if (rc.size() >= r2.size() * 0.5) {
-						//小さい矩形の縦の範囲が50%以上重なっていたら統合
+						//縦の範囲が重なっている範囲に、小さい矩形の縦の範囲の50%以上が重なっていたら統合
 						rects[i] |= rects[j];
 						count++;
 

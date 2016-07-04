@@ -1,6 +1,7 @@
 #ifndef LINEDETECTOR_H
 #define LINEDETECTOR_H
 
+#include <vector>
 #include <opencv2/opencv.hpp>
 
 //! 行認識クラス
@@ -26,6 +27,7 @@ private:
 	std::vector<cv::Rect> m_lines;			//!> 認識行の矩形領域
 };
 
+//! 矩形高さ降順ソート用比較クラス
 class GreaterRectHeight
 {
 public:
@@ -35,6 +37,7 @@ public:
     }
 };
 
+//! 矩形Y座標昇順ソート用比較クラス
 class LessRectY
 {
 public:

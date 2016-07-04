@@ -18,3 +18,11 @@ http://www.ijg.org/files/jpegsr6b.zip
 
 zlib-1.2.1
 https://sourceforge.net/projects/libpng/files/zlib/1.2.1/
+
+
+
+
+以下の開発環境を使用しています。
+
+Visual C++ 2010 Express SP1
+Microsoft Windows SDK 7.1
