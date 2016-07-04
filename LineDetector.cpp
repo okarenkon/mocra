@@ -91,7 +91,7 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 	//Y座標の昇順にソート
 	std::sort(rects.begin(), rects.end(), LessRectY());
 
-#if 1	//行検出結果を表禾
+#if 1	//行検出結果を表示
 	cv::Mat imgDebug;
 	cv::cvtColor(imgGray, imgDebug, CV_GRAY2RGB);
 
