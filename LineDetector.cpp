@@ -44,6 +44,29 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 	LabelingBS labeling;
 	labeling.Exec(imgBin.data, (short *)label.data, imgBin.cols, imgBin.rows, false, 0);
 	
+#if 1	//ラベリング結果を表示
+{
+	cv::Mat imgDebug;
+	cv::cvtColor(imgGray, imgDebug, CV_GRAY2RGB);
+
+	//ラベリング結果を描画
+	for (int i = 0; i < labeling.GetNumOfRegions(); i++) {
+		RegionInfoBS* info = labeling.GetResultRegionInfo(i);
+		cv::Point p1;		//矩形の左上座標
+		info->GetMin(p1.x, p1.y);
+		cv::Point p2;		//矩形の右下座標
+		info->GetMax(p2.x, p2.y);
+
+		cv::rectangle(imgDebug, p1, p2, CV_RGB(255, 0, 0));
+	}
+
+	cv::namedWindow("ラベリング結果", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
+	cv::imshow("ラベリング結果", imgDebug);
+	cv::waitKey(0);
+	cv::destroyWindow("ラベリング結果");
+}
+#endif
+
 	//ラベリング結果をcv::Rectのvectorにコピー
 	for (int i = 0; i < labeling.GetNumOfRegions(); i++) {
 		RegionInfoBS* info1 = labeling.GetResultRegionInfo(i);
@@ -66,7 +89,7 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 			TRange<int> r2(rects[j].y, rects[j].y + rects[j].height);	//小さい矩形の縦の範囲
 			TRange<int> rc = r1.intersected(r2);						//縦の範囲が重なっている範囲
 		
-			bool removed = false;
+			bool united = false;
 
 			if (! rc.isNull()) {
 				if (rc.size() >= r2.size() / 2) {
@@ -75,11 +98,11 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 
 					//統合した矩形を削除
 					rects.erase(rects.begin() + j);
-					removed = true;
+					united = true;
 				}
 			}
 
-			if (! removed) {
+			if (! united) {
 				j++;
 			}
 		}
