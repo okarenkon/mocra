@@ -60,31 +60,28 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 	std::sort(rects.begin(), rects.end(), GreaterRectHeight());
 
 	//縦の範囲が重なっている矩形を横方向に統合していく
-	while (! rects.empty()) {
-		size_t count = 0;	//矩形を統合した回数
-
-		for (size_t i = 0; i < rects.size() - 1; i++) {
-			for (size_t j = i + 1; j < rects.size(); j++) {
-				TRange<int> r1(rects[i].y, rects[i].y + rects[i].height);	//大きい矩形の縦の範囲
-				TRange<int> r2(rects[j].y, rects[j].y + rects[j].height);	//小さい矩形の縦の範囲
-				TRange<int> rc = r1.intersected(r2);						//縦の範囲が重なっている範囲
+	for (size_t i = 0; i < rects.size() - 1; i++) {
+		for (size_t j = i + 1; j < rects.size(); ) {
+			TRange<int> r1(rects[i].y, rects[i].y + rects[i].height);	//大きい矩形の縦の範囲
+			TRange<int> r2(rects[j].y, rects[j].y + rects[j].height);	//小さい矩形の縦の範囲
+			TRange<int> rc = r1.intersected(r2);						//縦の範囲が重なっている範囲
 		
-				if (! rc.isNull()) {
-					if (rc.size() >= r2.size() / 2) {
-						//縦の範囲が重なっている範囲に、小さい矩形の縦の範囲の50%以上が重なっていたら統合
-						rects[i] |= rects[j];
-						count++;
+			bool removed = false;
 
-						//統合した矩形を削除
-						rects.erase(rects.begin() + j);
-					}
+			if (! rc.isNull()) {
+				if (rc.size() >= r2.size() / 2) {
+					//縦の範囲が重なっている範囲に、小さい矩形の縦の範囲の50%以上が重なっていたら統合
+					rects[i] |= rects[j];
+
+					//統合した矩形を削除
+					rects.erase(rects.begin() + j);
+					removed = true;
 				}
 			}
-		}
 
-		//重なり合う矩形がなくなったら終わる
-		if (count == 0) {
-			break;
+			if (! removed) {
+				j++;
+			}
 		}
 	}
 
