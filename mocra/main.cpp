@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 {
 	char* files[] = {
 		//"sample/test_MSゴシック12_gray_200dpi.tif",
-		"sample/test_MSゴシック12_gray_200dpi_5deg.png",
+		"../sample/test_MSゴシック12_gray_200dpi_5deg.png",
 		//"../../../jpeg-6b/testimg.bmp",
 		//"../../../jpeg-6b/testimg.jpg",
 		//"../../../jpeg-6b/testimg.ppm",
