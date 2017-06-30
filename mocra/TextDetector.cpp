@@ -43,7 +43,7 @@ TextDetector::TextDetector(const cv::Mat& img, const QString& credentialsFilePat
 
 	QByteArray result = detect.readAll();
 
-	if (detect.exitCode() > 0) {
+	if (detect.exitCode() == 0) {
 		m_logWidget->append("Completed.");
 
 		QTextCodec *codec = QTextCodec::codecForName("Shift-JIS");

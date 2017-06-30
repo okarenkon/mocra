@@ -25,5 +25,7 @@ http://download.qt.io/archive/qt/5.8/5.8.0/qt-opensource-windows-x86-msvc2015-5.
 以下の開発環境を使用しています。
 
 Microsoft Visual Studio Community 2015
+
   Visual C# 2015
+
   Visual C++ 2015

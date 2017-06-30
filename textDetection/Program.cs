@@ -86,7 +86,8 @@ namespace GoogleCloudVisionTextDetection
             //画像ファイルがひとつもなければ終了
             if(imagePaths.Count < 1)
             {
-                return 0;
+                Console.WriteLine("No image.");
+                return 1;   //エラー
             }
 
             try
@@ -104,7 +105,8 @@ namespace GoogleCloudVisionTextDetection
                 // Check if texts were found
                 if (result == null)
                 {
-                    return 0;
+                    Console.WriteLine("No results.");
+                    return 1;   //エラー
                 }
 
                 // Loop through and output texts for the image
@@ -114,18 +116,19 @@ namespace GoogleCloudVisionTextDetection
                     //Console.WriteLine("Text for image: " + imagePaths[i]);
                     foreach (var text in response.TextAnnotations)
                     {
+                        //標準出力に認識結果を出力
                         Console.WriteLine(text.Description);
                         break;  //1行目で抜ける
                     }
                     i++;
                 }
 
-                return i;
+                return 0;   //正常
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return 0;
+                return 1;   //エラー
             }
         }
     }
