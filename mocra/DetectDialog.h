@@ -14,7 +14,8 @@ public:
 	void setCredentialsFilePath(const QString& credentialsFilePath);
 	QString credentialsFilePath();
 
-private:
+private slots:
+	void onBrowseFile();
 };
 
 #endif
