@@ -136,16 +136,22 @@ void MainWindow::open()
 {
 	QStringList filters;
 	filters << 
-		tr("PNG ファイル (*.png)") << 
-		tr("ビットマップ ファイル (*.bmp)") << 
-		tr("TIFF ファイル (*.tif)") <<
-		tr("すべての画像ファイル (*.png *.bmp *.tif)") <<
+		tr("すべての画像ファイル (*.png *.tif *.tiff *.bmp *.dib *.jpg *.jpeg *.jpe *.jp2)") <<
+		tr("PNG ファイル (*.png)") <<
+		tr("TIFF ファイル (*.tif *.tiff)") <<
+		tr("ビットマップ ファイル (*.bmp *.dib)") <<
+		tr("JPEG ファイル (*.jpg *.jpeg *.jpe)") <<
+		tr("JPEG 2000 ファイル (*.jp2)") <<
 		tr("すべてのファイル (*.*)");
 
-	QFileDialog dialog(this, tr("ファイルを開く"));
+	QFileDialog dialog(this, tr("開く"));
 	dialog.setNameFilters(filters);
 	if (dialog.exec() == QDialog::Accepted) {
-		loadFile(dialog.selectedFiles().first());
+		m_imgPages.clear();
+		m_textPages.clear();
+		if (! loadFile(dialog.selectedFiles().first())) {
+			QMessageBox::warning(this, tr("mocra"), tr("画像ファイルを開けませんでした。\n") + "'" + dialog.selectedFiles().first() + "'");
+		}
 	}
 }
 
@@ -158,8 +164,11 @@ void MainWindow::saveAs()
 
     QFileDialog dialog(this, tr("名前を付けて保存"));
 	dialog.setNameFilters(filters);
-
-    while (dialog.exec() == QDialog::Accepted && !saveFile(dialog.selectedFiles().first())) {}
+	if (dialog.exec() == QDialog::Accepted) {
+		if (! saveFile(dialog.selectedFiles().first())) {
+			QMessageBox::warning(this, tr("mocra"), tr("テキスト ファイルを保存できませんでした。\n") + "'" + dialog.selectedFiles().first() + "'");
+		}
+	}
 }
 
 void MainWindow::textDetect()
