@@ -180,8 +180,6 @@ void MainWindow::textDetect()
 
 		m_textlog->clear();
 
-		QString imagefilename = windowFilePath();
-
 		for (int page = 0; page < m_imgPages.count(); page++) {
 			TextDetector detector(m_imgPages[page], m_credentialsFilePath, m_textlog);
 			m_textPages.append(detector.Text());
