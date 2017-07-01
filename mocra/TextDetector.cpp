@@ -11,7 +11,7 @@ TextDetector::TextDetector(const cv::Mat& img, const QString& credentialsFilePat
 {
 	m_imageFilename = QStandardPaths::TempLocation;
 	m_imageFilename = QDir::tempPath();
-	m_imageFilename += "\\_mocr_temp.png";
+	m_imageFilename += "\\~$mocra_mocra_temp.png";
 
 	QImage qimg = QImage(img.ptr(), img.cols, img.rows, img.step, QImage::Format_RGB888).copy();
 	qimg.save(m_imageFilename);
@@ -59,7 +59,9 @@ TextDetector::TextDetector(const cv::Mat& img, const QString& credentialsFilePat
 TextDetector::~TextDetector()
 {
 	if (!m_imageFilename.isEmpty()) {
-		QFile::remove(m_imageFilename);
+		if (QFile::exists(m_imageFilename)) {
+			QFile::remove(m_imageFilename);
+		}
 	}
 }
 
