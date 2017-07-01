@@ -15,6 +15,11 @@ MainWindow::MainWindow()
    , m_textPages()
    , m_nowPage(0)
    , m_credentialsFilePath()
+   , m_enableImageCollect(true)
+   , m_enableGrayScale(true)
+   , m_enableDenoise(true)
+   , m_enableSlantCorrect(true)
+   , m_enableDetectLines(true)
 {
     m_imageLabel->setBackgroundRole(QPalette::Base);
     m_imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -174,9 +179,19 @@ void MainWindow::saveAs()
 void MainWindow::textDetect()
 {
 	DetectDialog dlg;
-	dlg.setCredentialsFilePath(m_credentialsFilePath);
+	dlg.editCredentialsFilePath->setText(m_credentialsFilePath);
+	dlg.checkImageCollect->setCheckState(m_enableImageCollect ? Qt::Checked : Qt::Unchecked);
+	dlg.checkGrayScale->setCheckState(m_enableGrayScale ? Qt::Checked : Qt::Unchecked);
+	dlg.checkDenoise->setCheckState(m_enableDenoise ? Qt::Checked : Qt::Unchecked);
+	dlg.checkSlantCorrect->setCheckState(m_enableSlantCorrect ? Qt::Checked : Qt::Unchecked);
+	dlg.checkDetectLines->setCheckState(m_enableDetectLines ? Qt::Checked : Qt::Unchecked);
 	if (dlg.exec() == QDialog::Accepted) {
-		m_credentialsFilePath = dlg.credentialsFilePath();
+		m_credentialsFilePath = dlg.editCredentialsFilePath->text();
+		m_enableImageCollect = dlg.checkImageCollect->checkState() == Qt::Checked;
+		m_enableGrayScale = dlg.checkGrayScale->checkState() == Qt::Checked;
+		m_enableDenoise = dlg.checkDenoise->checkState() == Qt::Checked;
+		m_enableSlantCorrect = dlg.checkSlantCorrect->checkState() == Qt::Checked;
+		m_enableDetectLines = dlg.checkDetectLines->checkState() == Qt::Checked;
 
 		m_textlog->clear();
 
@@ -329,8 +344,13 @@ void MainWindow::writeSettings()
 	settings.setValue("windowState", saveState());
 	settings.endGroup();
 
-	settings.beginGroup("gcpvision");
-	settings.setValue("credentialsFilePath", m_credentialsFilePath);
+	settings.beginGroup("TextDetect");
+	settings.setValue("credentialsFilePath",	m_credentialsFilePath);
+	settings.setValue("enableImageCollect",		m_enableImageCollect);
+	settings.setValue("enableGrayScale",		m_enableGrayScale);
+	settings.setValue("enableDenoise",			m_enableDenoise);
+	settings.setValue("enableSlantCorrect",		m_enableSlantCorrect);
+	settings.setValue("enableDetectLines",		m_enableDetectLines);
 	settings.endGroup();
 }
 
@@ -344,8 +364,13 @@ bool MainWindow::readSettings()
 	restoreState(settings.value("windowState").toByteArray());
 	settings.endGroup();
 
-	settings.beginGroup("gcpvision");
-	m_credentialsFilePath = settings.value("credentialsFilePath", QString("")).toString();
+	settings.beginGroup("TextDetect");
+	m_credentialsFilePath	= settings.value("credentialsFilePath",	QString("")).toString();
+	m_enableImageCollect	= settings.value("enableImageCollect",	true).toBool();
+	m_enableGrayScale		= settings.value("enableGrayScale",		true).toBool();
+	m_enableDenoise			= settings.value("enableDenoise",		true).toBool();
+	m_enableSlantCorrect	= settings.value("enableSlantCorrect",	true).toBool();
+	m_enableDetectLines		= settings.value("enableDetectLines",	true).toBool();
 	settings.endGroup();
 
 	return exists;

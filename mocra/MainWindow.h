@@ -55,6 +55,11 @@ private:
 	QVector<QString> m_textPages;
 	int				m_nowPage;
 	QString			m_credentialsFilePath;
+	bool			m_enableImageCollect;
+	bool			m_enableGrayScale;
+	bool			m_enableDenoise;
+	bool			m_enableSlantCorrect;
+	bool			m_enableDetectLines;
 
     QAction *saveAsAct;
 	QAction *textDetectAct;

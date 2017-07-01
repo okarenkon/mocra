@@ -9,16 +9,7 @@ DetectDialog::DetectDialog(QWidget *parent)
 	setupUi(this);
 
 	QObject::connect(buttonBrowse, SIGNAL(clicked()), this, SLOT(onBrowseFile()));
-}
-
-void DetectDialog::setCredentialsFilePath(const QString& credentialsFilePath)
-{
-	editCredentialsFilePath->setText(credentialsFilePath);
-}
-
-QString DetectDialog::credentialsFilePath()
-{
-	return editCredentialsFilePath->text();
+	QObject::connect(checkImageCollect, SIGNAL(stateChanged(int)), this, SLOT(onStateChangedCheckImageCollect(int)));
 }
 
 void DetectDialog::onBrowseFile()
@@ -28,5 +19,25 @@ void DetectDialog::onBrowseFile()
 		tr("ファイル選択"), fileName, tr("JSON ファイル (*.json);;すべてのファイル (*.*)"));
 	if (! fileName.isNull()) {
 		editCredentialsFilePath->setText(QDir::toNativeSeparators(fileName));
+	}
+}
+
+void DetectDialog::onStateChangedCheckImageCollect(int state)
+{
+	switch (state) {
+	case Qt::Unchecked:
+		checkGrayScale->setEnabled(false);
+		checkDenoise->setEnabled(false);
+		checkSlantCorrect->setEnabled(false);
+		checkDetectLines->setEnabled(false);
+		break;
+	case Qt::Checked:
+		checkGrayScale->setEnabled(false);
+		checkDenoise->setEnabled(true);
+		checkSlantCorrect->setEnabled(true);
+		checkDetectLines->setEnabled(true);
+		break;
+	default:
+		break;
 	}
 }
