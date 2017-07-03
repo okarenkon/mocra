@@ -91,7 +91,7 @@ bool MainWindow::loadFile(const QString &fileName)
 	}
 
 	setImage(m_nowPage);
-	fitToWindow();
+	fitToWidth();
 
     setWindowFilePath(fileName);
 
@@ -303,6 +303,15 @@ void MainWindow::normalSize()
     m_scaleFactor = 1.0;
 }
 
+void MainWindow::fitToWidth()
+{
+	normalSize();
+	double scaleH = (double)m_scrollArea->width() / (double)m_imageLabel->width();
+
+	m_scaleFactor = scaleH;
+	scaleImage(1.0);
+}
+
 void MainWindow::fitToWindow()
 {
 	normalSize();
@@ -361,7 +370,11 @@ void MainWindow::createActions()
     normalSizeAct->setShortcut(tr("Ctrl+S"));
     normalSizeAct->setEnabled(false);
 
-    fitToWindowAct = viewMenu->addAction(tr("全体を表示(&F)"), this, &MainWindow::fitToWindow);
+	fitToWidthAct = viewMenu->addAction(tr("ページの幅に合わせる(&W)"), this, &MainWindow::fitToWidth);
+	fitToWidthAct->setShortcut(tr("Ctrl+W"));
+	fitToWidthAct->setEnabled(false);
+
+	fitToWindowAct = viewMenu->addAction(tr("全体を表示(&F)"), this, &MainWindow::fitToWindow);
 	fitToWindowAct->setShortcut(tr("Ctrl+F"));
 	fitToWindowAct->setEnabled(false);
 
@@ -380,6 +393,7 @@ void MainWindow::updateActions()
 	zoomInAct->setEnabled(!m_image.isNull());
     zoomOutAct->setEnabled(!m_image.isNull());
     normalSizeAct->setEnabled(!m_image.isNull());
+	fitToWidthAct->setEnabled(!m_image.isNull());
 	fitToWindowAct->setEnabled(!m_image.isNull());
 }
 

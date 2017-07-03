@@ -32,6 +32,7 @@ private slots:
 	void zoomIn();
 	void zoomOut();
 	void normalSize();
+	void fitToWidth();
     void fitToWindow();
     void about();
 
@@ -61,14 +62,15 @@ private:
 	bool			m_enableSlantCorrect;
 	bool			m_enableDetectLines;
 
-    QAction *saveAsAct;
-	QAction *textDetectAct;
-	QAction *nextPageAct;
-	QAction *prevPageAct;
-    QAction *zoomInAct;
-    QAction *zoomOutAct;
-    QAction *normalSizeAct;
-    QAction *fitToWindowAct;
+    QAction* saveAsAct;
+	QAction* textDetectAct;
+	QAction* nextPageAct;
+	QAction* prevPageAct;
+    QAction* zoomInAct;
+    QAction* zoomOutAct;
+    QAction* normalSizeAct;
+	QAction* fitToWidthAct;
+    QAction* fitToWindowAct;
 };
 
 #endif
