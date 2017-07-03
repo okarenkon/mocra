@@ -44,7 +44,7 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 	LabelingBS labeling;
 	labeling.Exec(imgBin.data, (short *)label.data, imgBin.cols, imgBin.rows, false, 0);
 	
-#if 1	//ラベリング結果を表示
+#if 0	//ラベリング結果を表示
 {
 	cv::Mat imgDebug;
 	cv::cvtColor(imgGray, imgDebug, CV_GRAY2RGB);
@@ -76,7 +76,8 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 		cv::Point p2;		//矩形の右下座標
 		info1->GetMax(p2.x, p2.y);
 		
-		rects.push_back(cv::Rect(p1, p2));
+//		rects.push_back(cv::Rect(p1, p2));
+		rects.push_back(cv::Rect(p1, p2) + cv::Size(1, 1));
 	}
 
 	//高さの降順にソート
@@ -111,7 +112,7 @@ std::vector<cv::Rect> LineDetector::getLineRects(
 	//Y座標の昇順にソート
 	std::sort(rects.begin(), rects.end(), LessRectY());
 
-#if 1	//行検出結果を表示
+#if 0	//行検出結果を表示
 	cv::Mat imgDebug;
 	cv::cvtColor(imgGray, imgDebug, CV_GRAY2RGB);
 

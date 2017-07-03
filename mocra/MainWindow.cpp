@@ -1,6 +1,8 @@
 #include <QtWidgets>
 #include "MainWindow.h"
 #include "DetectDialog.h"
+#include "SlantCorrector.h"
+#include "LineDetector.h"
 #include "TextDetector.h"
 
 #pragma execution_character_set("utf-8")
@@ -195,11 +197,76 @@ void MainWindow::textDetect()
 
 		m_textlog->clear();
 
+		m_textlog->append(tr("認証ファイル ") + "'" + m_credentialsFilePath + "'");
+		m_textlog->repaint();
+
 		for (int page = 0; page < m_imgPages.count(); page++) {
-			TextDetector detector(m_imgPages[page], m_credentialsFilePath, m_textlog);
+			m_textlog->append(tr("画像ファイル ") + "'" + windowFilePath() + "'" + " (" + QString::number(page + 1) + "/" + QString::number(m_imgPages.count()) + ")");
+			m_textlog->repaint();
+
+			std::vector<cv::Rect> lines;
+
+			if (m_enableImageCollect) {
+				//256グレースケールに変換
+				if (m_enableGrayScale) {
+					m_textlog->append(tr("グレースケール変換..."));
+					m_textlog->repaint();
+
+					cv::Mat gray;
+					cv::cvtColor(m_imgPages[page], gray, CV_BGR2GRAY);
+					m_imgPages[page] = gray;
+				}
+
+				//ノイズ除去
+				if (m_enableDenoise) {
+					m_textlog->append(tr("ノイズ除去..."));
+					m_textlog->repaint();
+
+					cv::Mat denoize;
+					cv::adaptiveBilateralFilter(m_imgPages[page], denoize, cv::Size(7, 7), 7.0, 35.0);
+					m_imgPages[page] = denoize;
+				}
+
+				//傾き補正
+				if (m_enableSlantCorrect) {
+					m_textlog->append(tr("傾き補正..."));
+					m_textlog->repaint();
+
+					SlantCorrector sc(m_imgPages[page]);
+					m_imgPages[page] = sc.correctedImage();
+
+					m_textlog->append(tr("補正角度:") + QString::number(sc.slant()) + tr("[度]"));
+					m_textlog->repaint();
+				}
+
+				//行認識
+				if (m_enableDetectLines) {
+					m_textlog->append(tr("行認識..."));
+					m_textlog->repaint();
+
+					LineDetector ld(m_imgPages[page]);
+					lines = ld.lines();
+
+					m_textlog->append(tr("認識行数:") + QString::number(lines.size()) + tr("[行]"));
+					m_textlog->repaint();
+				}
+			}
+
+			//テキスト認識
+			m_textlog->append(tr("テキスト認識..."));
+			m_textlog->repaint();
+			TextDetector detector(m_imgPages[page], lines, m_credentialsFilePath, m_textlog);
 			m_textPages.append(detector.Text());
+
+			//256グレースケールに変換されていたらRGB888に戻しておく
+			if (m_imgPages[page].type() == CV_8UC1) {
+				cv::Mat rgb888;
+				cv::cvtColor(m_imgPages[page], rgb888, CV_GRAY2BGR);
+				m_imgPages[page] = rgb888;
+			}
 		}
 
+		setImage(m_nowPage);
 		m_textedit->setText(m_textPages[m_nowPage]);
 	}
 }
@@ -370,7 +437,7 @@ bool MainWindow::readSettings()
 	m_enableGrayScale		= settings.value("enableGrayScale",		true).toBool();
 	m_enableDenoise			= settings.value("enableDenoise",		true).toBool();
 	m_enableSlantCorrect	= settings.value("enableSlantCorrect",	true).toBool();
-	m_enableDetectLines		= settings.value("enableDetectLines",	true).toBool();
+	m_enableDetectLines		= settings.value("enableDetectLines",	false).toBool();
 	settings.endGroup();
 
 	return exists;

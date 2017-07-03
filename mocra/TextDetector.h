@@ -5,7 +5,11 @@
 class TextDetector
 {
 public:
-	TextDetector(const cv::Mat& img, const QString& credentialsFilePath, QTextEdit *textlog);
+	TextDetector(
+	 const cv::Mat& img,
+	 const std::vector<cv::Rect>& lines,
+	 const QString& credentialsFilePath,
+	 QTextEdit *textlog);
 	virtual ~TextDetector();
 
 public:
@@ -13,7 +17,7 @@ public:
 
 private:
 	QTextEdit*	m_logWidget;
-	QString		m_imageFilename;
+	QVector<QString>	m_imageFilenames;
 	QString		m_resultText;
 };
 

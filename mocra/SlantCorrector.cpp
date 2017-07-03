@@ -22,7 +22,7 @@ SlantCorrector::~SlantCorrector()
 //! 傾き角度取得
 double SlantCorrector::slant() const
 {
-	return m_slant;
+	return (m_slant * 180 / CV_PI) - 90;
 }
 
 //! 傾き補正画像取得
@@ -39,7 +39,7 @@ double SlantCorrector::detectSlant(
 	cv::Mat imgBin;
 	cv::threshold(imgGray, imgBin, 0, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 
-#if 1
+#if 0
 	cv::namedWindow("二値化", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 	cv::imshow("二値化", imgBin);
 	cv::waitKey(0);
@@ -51,7 +51,7 @@ double SlantCorrector::detectSlant(
 	LabelingBS	labeling;
 	labeling.Exec(imgBin.data, (short *)label.data, imgBin.cols, imgBin. rows, false, 0);
 
-#if 1	//ラベリング結果を表示
+#if 0	//ラベリング結果を表示
 {
 	cv::Mat imgDebug;
 	cv::cvtColor(imgGray, imgDebug, CV_GRAY2RGB);
@@ -88,7 +88,7 @@ double SlantCorrector::detectSlant(
 		cv::line(tmp, cv::Point((p1.x + p2.x) / 2, p2.y), cv::Point((p1.x + p2.x) / 2, p2.y), 255);
 	}
 
-#if 1	//各領域の下辺中央の点を表示
+#if 0	//各領域の下辺中央の点を表示
 	cv::namedWindow("下辺中央の点", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
 	cv::imshow("下辺中央の点", tmp);
 	cv::waitKey(0);
@@ -107,7 +107,7 @@ double SlantCorrector::detectSlant(
 			return DBL_MAX;		//傾き検出不可
 		}
 
-#if 1	//直線検出結果を表示
+#if 0	//直線検出結果を表示
 {
 		cv::Mat imgDebug;
 		cv::cvtColor(imgGray, imgDebug, CV_GRAY2RGB);
@@ -185,7 +185,7 @@ cv::Mat SlantCorrector::correctsSlant(
 		cv::warpAffine(imgGray, imgCorrectedSlant, affine_matrix, imgGray.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(255, 255, 255));
 	}
 
-#if 1	//傾き補正結果を表示
+#if 0	//傾き補正結果を表示
 	cv::namedWindow("傾き補正結果", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 	cv::imshow("傾き補正結果", imgCorrectedSlant);
 	cv::waitKey(0);
