@@ -28,7 +28,7 @@
     <Filter Include="Form Files">
       <UniqueIdentifier>{90c2f4df-8060-4d48-bb7e-8f10a8acad4e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CV">
+    <Filter Include="Image processing">
       <UniqueIdentifier>{c35ab1d5-3585-443b-b204-ee08c1dc6b38}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -49,13 +49,13 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="MultiPageImageReader.cpp">
-      <Filter>CV</Filter>
+      <Filter>Image processing</Filter>
     </ClCompile>
     <ClCompile Include="SlantCorrector.cpp">
-      <Filter>CV</Filter>
+      <Filter>Image processing</Filter>
     </ClCompile>
     <ClCompile Include="LineDetector.cpp">
-      <Filter>CV</Filter>
+      <Filter>Image processing</Filter>
     </ClCompile>
     <ClCompile Include="TextDetector.cpp">
       <Filter>Source Files</Filter>
@@ -91,19 +91,19 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="MultiPageImageReader.h">
-      <Filter>CV</Filter>
+      <Filter>Image processing</Filter>
     </ClInclude>
     <ClInclude Include="SlantCorrector.h">
-      <Filter>CV</Filter>
+      <Filter>Image processing</Filter>
     </ClInclude>
     <ClInclude Include="TRange.h">
-      <Filter>CV</Filter>
+      <Filter>Image processing</Filter>
     </ClInclude>
     <ClInclude Include="Labeling.h">
-      <Filter>CV</Filter>
+      <Filter>Image processing</Filter>
     </ClInclude>
     <ClInclude Include="LineDetector.h">
-      <Filter>CV</Filter>
+      <Filter>Image processing</Filter>
     </ClInclude>
     <ClInclude Include="TextDetector.h">
       <Filter>Header Files</Filter>

@@ -79,6 +79,15 @@ double SlantCorrector::detectSlant(
 	for (int i = 0; i < labeling.GetNumOfRegions(); i++) {
 		RegionInfoBS* info = labeling.GetResultRegionInfo(i);
 
+		//用紙の切れ目等と思わしき矩形は除外する
+		int w = 0;
+		int h = 0;
+		info->GetSize(w, h);
+		if ((w * 100 / info->GetNumOfPixels() > 80)
+		 || (h * 100 / info->GetNumOfPixels() > 80)) {
+			continue;
+		}
+
 		cv::Point p1;		//矩形の左上座標
 		info->GetMin(p1.x, p1.y);
 		cv::Point p2;		//矩形の右下座標
