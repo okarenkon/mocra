@@ -270,10 +270,16 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="debug\moc_TextDetector.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="DetectDialog.cpp" />
     <ClCompile Include="LineDetector.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="release\moc_TextDetector.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="SlantCorrector.cpp" />
     <ClCompile Include="TextDetector.cpp" />
   </ItemGroup>
@@ -380,7 +386,16 @@
     <ClInclude Include="LineDetector.h" />
     <ClInclude Include="MultiPageImageReader.h" />
     <ClInclude Include="SlantCorrector.h" />
-    <ClInclude Include="TextDetector.h" />
+    <CustomBuild Include="TextDetector.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QT_DIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_GUI_LIB -DQT_CORE_LIB --compiler-flavor=msvc --include debug/moc_predefs.h -I$(QT_DIR)/mkspecs/win32-msvc2015 -I$(QT_DIR)/include -I$(QT_DIR)/include/QtGui -I$(QT_DIR)/include/QtANGLE -I$(QT_DIR)/include/QtCore TextDetector.h -o debug\moc_TextDetector.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MOC TextDetector.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\moc_TextDetector.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TextDetector.h;debug\moc_predefs.h;$(QT_DIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QT_DIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_GUI_LIB -DQT_CORE_LIB --compiler-flavor=msvc --include debug/moc_predefs.h -I$(QT_DIR)/mkspecs/win32-msvc2015 -I$(QT_DIR)/include -I$(QT_DIR)/include/QtGui -I$(QT_DIR)/include/QtANGLE -I$(QT_DIR)/include/QtCore TextDetector.h -o release\moc_TextDetector.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MOC TextDetector.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\moc_TextDetector.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TextDetector.h;release\moc_predefs.h;$(QT_DIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+    </CustomBuild>
     <ClInclude Include="TRange.h" />
     <ClInclude Include="ui_DetectDialog.h" />
   </ItemGroup>

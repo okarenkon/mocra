@@ -197,20 +197,17 @@ void MainWindow::textDetect()
 
 		m_textlog->clear();
 
-		m_textlog->append(tr("認証ファイル ") + "'" + m_credentialsFilePath + "'");
-		m_textlog->repaint();
+		log(tr("認証ファイル ") + "'" + m_credentialsFilePath + "'");
 
 		for (int page = 0; page < m_imgPages.count(); page++) {
-			m_textlog->append(tr("画像ファイル ") + "'" + windowFilePath() + "'" + " (" + QString::number(page + 1) + "/" + QString::number(m_imgPages.count()) + ")");
-			m_textlog->repaint();
+			log(tr("画像ファイル ") + "'" + QDir::toNativeSeparators(windowFilePath()) + "'" + " (" + QString::number(page + 1) + "/" + QString::number(m_imgPages.count()) + ")");
 
 			std::vector<cv::Rect> lines;
 
 			if (m_enableImageCollect) {
 				//256グレースケールに変換
 				if (m_enableGrayScale) {
-					m_textlog->append(tr("グレースケール変換..."));
-					m_textlog->repaint();
+					log(tr("グレースケール変換..."));
 
 					cv::Mat gray;
 					cv::cvtColor(m_imgPages[page], gray, CV_BGR2GRAY);
@@ -219,8 +216,7 @@ void MainWindow::textDetect()
 
 				//ノイズ除去
 				if (m_enableDenoise) {
-					m_textlog->append(tr("ノイズ除去..."));
-					m_textlog->repaint();
+					log(tr("ノイズ除去..."));
 
 					cv::Mat denoize;
 					cv::adaptiveBilateralFilter(m_imgPages[page], denoize, cv::Size(7, 7), 7.0, 35.0);
@@ -229,33 +225,29 @@ void MainWindow::textDetect()
 
 				//傾き補正
 				if (m_enableSlantCorrect) {
-					m_textlog->append(tr("傾き補正..."));
-					m_textlog->repaint();
+					log(tr("傾き補正..."));
 
 					SlantCorrector sc(m_imgPages[page]);
 					m_imgPages[page] = sc.correctedImage();
 
-					m_textlog->append(tr("補正角度:") + QString::number(sc.slant()) + tr("[度]"));
-					m_textlog->repaint();
+					log(tr("補正角度:") + QString::number(sc.slant()) + tr("[度]"));
 				}
 
 				//行認識
 				if (m_enableDetectLines) {
-					m_textlog->append(tr("行認識..."));
-					m_textlog->repaint();
+					log(tr("行認識..."));
 
 					LineDetector ld(m_imgPages[page]);
 					lines = ld.lines();
 
-					m_textlog->append(tr("認識行数:") + QString::number(lines.size()) + tr("[行]"));
-					m_textlog->repaint();
+					log(tr("認識行数:") + QString::number(lines.size()) + tr("[行]"));
 				}
 			}
 
 			//テキスト認識
-			m_textlog->append(tr("テキスト認識..."));
-			m_textlog->repaint();
-			TextDetector detector(m_imgPages[page], lines, m_credentialsFilePath, m_textlog);
+			log(tr("テキスト認識..."));
+			TextDetector detector(m_imgPages[page], lines, m_credentialsFilePath, this);
+			log(tr(""));
 			m_textPages.append(detector.Text());
 
 			//256グレースケールに変換されていたらRGB888に戻しておく
@@ -326,6 +318,12 @@ void MainWindow::about()
 {
     QMessageBox::about(this, tr("mocra について"),
             tr("mocra version 0.1"));
+}
+
+void MainWindow::log(const QString& text)
+{
+	m_textlog->append(text);
+	m_textlog->repaint();
 }
 
 void MainWindow::createActions()

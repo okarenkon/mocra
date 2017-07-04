@@ -35,6 +35,7 @@ private slots:
 	void fitToWidth();
     void fitToWindow();
     void about();
+	void log(const QString& text);
 
 private:
     void createActions();
@@ -46,31 +47,32 @@ private:
 	void writeSettings();
 	bool readSettings();
 
-    QImage			m_image;
-    QLabel*			m_imageLabel;
-    QScrollArea*	m_scrollArea;
-	QTextEdit*		m_textedit;
-	QTextEdit*		m_textlog;
-	double			m_scaleFactor;
-	QVector<cv::Mat> m_imgPages;
-	QVector<QString> m_textPages;
-	int				m_nowPage;
-	QString			m_credentialsFilePath;
-	bool			m_enableImageCollect;
-	bool			m_enableGrayScale;
-	bool			m_enableDenoise;
-	bool			m_enableSlantCorrect;
-	bool			m_enableDetectLines;
+private:
+	QImage				m_image;
+    QLabel*				m_imageLabel;
+    QScrollArea*		m_scrollArea;
+	QTextEdit*			m_textedit;
+	QTextEdit*			m_textlog;
+	double				m_scaleFactor;
+	QVector<cv::Mat>	m_imgPages;
+	QVector<QString>	m_textPages;
+	int					m_nowPage;
+	QString				m_credentialsFilePath;
+	bool				m_enableImageCollect;
+	bool				m_enableGrayScale;
+	bool				m_enableDenoise;
+	bool				m_enableSlantCorrect;
+	bool				m_enableDetectLines;
 
-    QAction* saveAsAct;
-	QAction* textDetectAct;
-	QAction* nextPageAct;
-	QAction* prevPageAct;
-    QAction* zoomInAct;
-    QAction* zoomOutAct;
-    QAction* normalSizeAct;
-	QAction* fitToWidthAct;
-    QAction* fitToWindowAct;
+    QAction*			saveAsAct;
+	QAction*			textDetectAct;
+	QAction*			nextPageAct;
+	QAction*			prevPageAct;
+    QAction*			zoomInAct;
+    QAction*			zoomOutAct;
+    QAction*			normalSizeAct;
+	QAction*			fitToWidthAct;
+    QAction*			fitToWindowAct;
 };
 
 #endif

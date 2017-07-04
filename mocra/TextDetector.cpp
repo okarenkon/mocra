@@ -8,11 +8,12 @@ TextDetector::TextDetector(
  const cv::Mat& img,
  const std::vector<cv::Rect>& lines,
  const QString& credentialsFilePath,
- QTextEdit *textlog)
-	: m_logWidget(textlog)
-	, m_imageFilenames()
+ const QObject* parent)
+	: m_imageFilenames()
 	, m_resultText()
 {
+	QObject::connect(this, SIGNAL(log(const QString&)), parent, SLOT(log(const QString&)));
+
 	if (lines.size() == 0) {
 		QString imageFilename = QString("%1/~$mocra_temp.png").arg(QDir::tempPath());
 		cv::imwrite(QDir::toNativeSeparators(imageFilename).toStdString(), img);
@@ -37,7 +38,7 @@ TextDetector::TextDetector(
 
 	detect.start("textDetection");
 	if (! detect.waitForStarted()) {
-		m_logWidget->append("textDetection : Can not start process.");
+		emit log(tr("テキスト認識プロセスを開始できませんでした。"));
 		return;
 	}
 
@@ -49,23 +50,23 @@ TextDetector::TextDetector(
 	detect.closeWriteChannel();
 
 	if (! detect.waitForFinished()) {
-		m_logWidget->append("textDetection : Process error.");
+		emit log(tr("テキスト認識プロセスでエラーが発生しました。"));
 		return;
 	}
 
 	QByteArray result = detect.readAll();
 
 	if (detect.exitCode() == 0) {
-		m_logWidget->append("Completed.");
+		emit log(tr("正常終了"));
 
 		QTextCodec *codec = QTextCodec::codecForName("Shift-JIS");
 		m_resultText = codec->toUnicode(result);
 	} else {
-		m_logWidget->append("Error!!!");
+		emit log(tr("エラー発生!!!"));
+
 		QTextCodec *codec = QTextCodec::codecForName("Shift-JIS");
-		m_logWidget->append(codec->toUnicode(result));
+		emit log(codec->toUnicode(result));
 	}
-	m_logWidget->repaint();
 }
 
 TextDetector::~TextDetector()
