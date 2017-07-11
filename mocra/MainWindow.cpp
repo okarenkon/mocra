@@ -10,8 +10,8 @@
 MainWindow::MainWindow()
    : m_imageLabel(new QLabel)
    , m_scrollArea(new QScrollArea)
-   , m_textedit(new QTextEdit)
-   , m_textlog(new QTextEdit)
+   , m_textedit(new QPlainTextEdit)
+   , m_textlog(new QPlainTextEdit)
    , m_scaleFactor(1)
    , m_imgPages()
    , m_textPages()
@@ -110,7 +110,7 @@ void MainWindow::setImage(int page)
 
 		if ((page >= 0)
 		 && (page < m_textPages.count())) {
-			m_textedit->setText(m_textPages[page]);
+			m_textedit->setPlainText(m_textPages[page]);
 		}
 		else {
 			m_textedit->clear();
@@ -259,7 +259,7 @@ void MainWindow::textDetect()
 		}
 
 		setImage(m_nowPage);
-		m_textedit->setText(m_textPages[m_nowPage]);
+		m_textedit->setPlainText(m_textPages[m_nowPage]);
 	}
 }
 
@@ -322,7 +322,7 @@ void MainWindow::about()
 
 void MainWindow::log(const QString& text)
 {
-	m_textlog->append(text);
+	m_textlog->appendPlainText(text);
 	m_textlog->repaint();
 }
 

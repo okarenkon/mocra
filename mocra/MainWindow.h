@@ -11,7 +11,7 @@ class QLabel;
 class QMenu;
 class QScrollArea;
 class QScrollBar;
-class QTextEdit;
+class QPlainTextEdit;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -51,8 +51,8 @@ private:
 	QImage				m_image;
     QLabel*				m_imageLabel;
     QScrollArea*		m_scrollArea;
-	QTextEdit*			m_textedit;
-	QTextEdit*			m_textlog;
+	QPlainTextEdit*		m_textedit;
+	QPlainTextEdit*		m_textlog;
 	double				m_scaleFactor;
 	QVector<cv::Mat>	m_imgPages;
 	QVector<QString>	m_textPages;
