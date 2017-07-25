@@ -164,16 +164,17 @@ void MainWindow::open()
 
 void MainWindow::saveAs()
 {
-	QStringList filters;
-	filters <<
-		tr("テキスト ファイル (*.txt)") <<
-		tr("すべてのファイル (*.*)");
+	QFileInfo fi(windowFilePath());
+	QString dir(fi.path() + QDir::separator() + fi.baseName() + ".txt");
 
-    QFileDialog dialog(this, tr("名前を付けて保存"));
-	dialog.setNameFilters(filters);
-	if (dialog.exec() == QDialog::Accepted) {
-		if (! saveFile(dialog.selectedFiles().first())) {
-			QMessageBox::warning(this, tr("mocra"), tr("テキスト ファイルを保存できませんでした。\n") + "'" + dialog.selectedFiles().first() + "'");
+	QString filters(
+		tr("テキスト ファイル (*.txt)") + ";;" +
+		tr("すべてのファイル (*.*)"));
+
+	QString filename = QFileDialog::getSaveFileName(this, tr("名前を付けて保存"), dir, filters);
+	if (!filename.isEmpty()) {
+		if (!saveFile(filename)) {
+			QMessageBox::warning(this, tr("mocra"), tr("テキスト ファイルを保存できませんでした。\n") + "'" + filename + "'");
 		}
 	}
 }
