@@ -63,7 +63,6 @@ MainWindow::~MainWindow()
 	writeSettings();
 }
 
-
 bool MainWindow::loadFile(const QString &fileName)
 {
 	MultiPageImageReader mpi(std::string(fileName.toLocal8Bit().data()));
@@ -105,7 +104,12 @@ void MainWindow::setImage(int page)
 {
 	if ((page >= 0)
 	 && (page < m_imgPages.count())) {
-		m_image = QImage(m_imgPages[page].ptr(), m_imgPages[page].cols, m_imgPages[page].rows, m_imgPages[page].step, QImage::Format_RGB888);
+		m_image = QImage(
+			m_imgPages[page].ptr(),
+			m_imgPages[page].cols,
+			m_imgPages[page].rows,
+			m_imgPages[page].step,
+			QImage::Format_RGB888);
 		m_imageLabel->setPixmap(QPixmap::fromImage(m_image));
 
 		if ((page >= 0)
@@ -141,23 +145,22 @@ bool MainWindow::saveFile(const QString &fileName)
 
 void MainWindow::open()
 {
-	QStringList filters;
-	filters << 
-		tr("すべての画像ファイル (*.png *.tif *.tiff *.bmp *.dib *.jpg *.jpeg *.jpe *.jp2)") <<
-		tr("PNG ファイル (*.png)") <<
-		tr("TIFF ファイル (*.tif *.tiff)") <<
-		tr("ビットマップ ファイル (*.bmp *.dib)") <<
-		tr("JPEG ファイル (*.jpg *.jpeg *.jpe)") <<
-		tr("JPEG 2000 ファイル (*.jp2)") <<
-		tr("すべてのファイル (*.*)");
+	QString filters(
+		tr("すべての画像ファイル (*.png *.tif *.tiff *.bmp *.dib *.jpg *.jpeg *.jpe *.jp2)") + ";;" +
+		tr("PNG ファイル (*.png)") + ";;" +
+		tr("TIFF ファイル (*.tif *.tiff)") + ";;" +
+		tr("ビットマップ ファイル (*.bmp *.dib)") + ";;" +
+		tr("JPEG ファイル (*.jpg *.jpeg *.jpe)") + ";;" +
+		tr("JPEG 2000 ファイル (*.jp2)") + ";;" +
+		tr("すべてのファイル (*.*)"));
 
-	QFileDialog dialog(this, tr("開く"));
-	dialog.setNameFilters(filters);
-	if (dialog.exec() == QDialog::Accepted) {
+	QString filename = QFileDialog::getOpenFileName(this, tr("開く"), QString(), filters);
+	if (! filename.isEmpty()) {
 		m_imgPages.clear();
 		m_textPages.clear();
-		if (! loadFile(dialog.selectedFiles().first())) {
-			QMessageBox::warning(this, tr("mocra"), tr("画像ファイルを開けませんでした。\n") + "'" + dialog.selectedFiles().first() + "'");
+		if (! loadFile(filename)) {
+			QMessageBox::warning(this, QApplication::applicationName(),
+				tr("画像ファイルを開けませんでした。\n") + "'" + filename + "'");
 		}
 	}
 }
@@ -172,9 +175,10 @@ void MainWindow::saveAs()
 		tr("すべてのファイル (*.*)"));
 
 	QString filename = QFileDialog::getSaveFileName(this, tr("名前を付けて保存"), dir, filters);
-	if (!filename.isEmpty()) {
+	if (! filename.isEmpty()) {
 		if (!saveFile(filename)) {
-			QMessageBox::warning(this, tr("mocra"), tr("テキスト ファイルを保存できませんでした。\n") + "'" + filename + "'");
+			QMessageBox::warning(this, QApplication::applicationName(),
+				tr("テキスト ファイルを保存できませんでした。\n") + "'" + filename + "'");
 		}
 	}
 }
@@ -201,7 +205,8 @@ void MainWindow::textDetect()
 		log(tr("認証ファイル ") + "'" + m_credentialsFilePath + "'");
 
 		for (int page = 0; page < m_imgPages.count(); page++) {
-			log(tr("画像ファイル ") + "'" + QDir::toNativeSeparators(windowFilePath()) + "'" + " (" + QString::number(page + 1) + "/" + QString::number(m_imgPages.count()) + ")");
+			log(tr("画像ファイル ") + "'" + QDir::toNativeSeparators(windowFilePath()) + "'" +
+				" (" + QString::number(page + 1) + "/" + QString::number(m_imgPages.count()) + ")");
 
 			std::vector<cv::Rect> lines;
 
@@ -311,14 +316,15 @@ void MainWindow::fitToWindow()
 	double scaleH = (double)m_scrollArea->width() / (double)m_imageLabel->width();
 	double scaleV = (double)m_scrollArea->height() / (double)m_imageLabel->height();
 
-	m_scaleFactor = (scaleH > scaleV ? scaleV : scaleH);
+	m_scaleFactor = (scaleH > scaleV) ? scaleV : scaleH;
 	scaleImage(1.0);
 }
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("mocra について"),
-            tr("mocra version 0.1"));
+    QMessageBox::about(this,
+		QApplication::applicationName() + tr(" について"),
+		QApplication::applicationName() + tr(" version 0.1"));
 }
 
 void MainWindow::log(const QString& text)
@@ -330,57 +336,61 @@ void MainWindow::log(const QString& text)
 void MainWindow::createActions()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("ファイル(&F)"));
+	{
+		QAction *openAct = fileMenu->addAction(tr("画像を開く(&O)..."), this, &MainWindow::open);
+		openAct->setShortcut(QKeySequence::Open);
 
-    QAction *openAct = fileMenu->addAction(tr("画像を開く(&O)..."), this, &MainWindow::open);
-    openAct->setShortcut(QKeySequence::Open);
+		saveAsAct = fileMenu->addAction(tr("名前を付けてテキストを保存(&A)..."), this, &MainWindow::saveAs);
+		saveAsAct->setEnabled(false);
 
-    saveAsAct = fileMenu->addAction(tr("名前を付けてテキストを保存(&A)..."), this, &MainWindow::saveAs);
-    saveAsAct->setEnabled(false);
+		fileMenu->addSeparator();
 
-    fileMenu->addSeparator();
-
-    QAction *exitAct = fileMenu->addAction(tr("終了(&X)"), this, &QWidget::close);
-    exitAct->setShortcut(tr("Ctrl+Q"));
+		QAction *exitAct = fileMenu->addAction(tr("終了(&X)"), this, &QWidget::close);
+		exitAct->setShortcut(tr("Ctrl+Q"));
+	}
 
     QMenu *editMenu = menuBar()->addMenu(tr("編集(&E)"));
-
-	textDetectAct = editMenu->addAction(tr("テキスト認識(&T)"), this, &MainWindow::textDetect);
-	textDetectAct->setEnabled(false);
+	{
+		textDetectAct = editMenu->addAction(tr("テキスト認識(&T)"), this, &MainWindow::textDetect);
+		textDetectAct->setEnabled(false);
+	}
 
     QMenu *viewMenu = menuBar()->addMenu(tr("表示(&V)"));
+	{
+		nextPageAct = viewMenu->addAction(tr("次のページ(&N)"), this, &MainWindow::nextPage);
+		nextPageAct->setEnabled(false);
 
-	nextPageAct = viewMenu->addAction(tr("次のページ(&N)"), this, &MainWindow::nextPage);
-	nextPageAct->setEnabled(false);
+		prevPageAct = viewMenu->addAction(tr("前のページ(&P)"), this, &MainWindow::prevPage);
+		prevPageAct->setEnabled(false);
 
-	prevPageAct = viewMenu->addAction(tr("前のページ(&P)"), this, &MainWindow::prevPage);
-	prevPageAct->setEnabled(false);
+		viewMenu->addSeparator();
 
-	viewMenu->addSeparator();
-	
-	zoomInAct = viewMenu->addAction(tr("ズーム イン(&I)"), this, &MainWindow::zoomIn);
-    zoomInAct->setShortcut(QKeySequence::ZoomIn);
-    zoomInAct->setEnabled(false);
+		zoomInAct = viewMenu->addAction(tr("ズーム イン(&I)"), this, &MainWindow::zoomIn);
+		zoomInAct->setShortcut(QKeySequence::ZoomIn);
+		zoomInAct->setEnabled(false);
 
-    zoomOutAct = viewMenu->addAction(tr("ズーム アウト(&O)"), this, &MainWindow::zoomOut);
-    zoomOutAct->setShortcut(QKeySequence::ZoomOut);
-    zoomOutAct->setEnabled(false);
+		zoomOutAct = viewMenu->addAction(tr("ズーム アウト(&O)"), this, &MainWindow::zoomOut);
+		zoomOutAct->setShortcut(QKeySequence::ZoomOut);
+		zoomOutAct->setEnabled(false);
 
-    normalSizeAct = viewMenu->addAction(tr("ピクセル等倍(&N)"), this, &MainWindow::normalSize);
-    normalSizeAct->setShortcut(tr("Ctrl+S"));
-    normalSizeAct->setEnabled(false);
+		normalSizeAct = viewMenu->addAction(tr("ピクセル等倍(&N)"), this, &MainWindow::normalSize);
+		normalSizeAct->setShortcut(tr("Ctrl+S"));
+		normalSizeAct->setEnabled(false);
 
-	fitToWidthAct = viewMenu->addAction(tr("ページの幅に合わせる(&W)"), this, &MainWindow::fitToWidth);
-	fitToWidthAct->setShortcut(tr("Ctrl+W"));
-	fitToWidthAct->setEnabled(false);
+		fitToWidthAct = viewMenu->addAction(tr("ページの幅に合わせる(&W)"), this, &MainWindow::fitToWidth);
+		fitToWidthAct->setShortcut(tr("Ctrl+W"));
+		fitToWidthAct->setEnabled(false);
 
-	fitToWindowAct = viewMenu->addAction(tr("全体を表示(&F)"), this, &MainWindow::fitToWindow);
-	fitToWindowAct->setShortcut(tr("Ctrl+F"));
-	fitToWindowAct->setEnabled(false);
+		fitToWindowAct = viewMenu->addAction(tr("全体を表示(&F)"), this, &MainWindow::fitToWindow);
+		fitToWindowAct->setShortcut(tr("Ctrl+F"));
+		fitToWindowAct->setEnabled(false);
+	}
 
-    QMenu *helpMenu = menuBar()->addMenu(tr("ヘルプ(&H)"));
-
-    helpMenu->addAction(tr("mocra について(&A)..."), this, &MainWindow::about);
-    helpMenu->addAction(tr("&Qt について..."), &QApplication::aboutQt);
+	QMenu *helpMenu = menuBar()->addMenu(tr("ヘルプ(&H)"));
+	{
+		helpMenu->addAction(QApplication::applicationName() + tr(" について(&A)..."), this, &MainWindow::about);
+		helpMenu->addAction(tr("&Qt について..."), &QApplication::aboutQt);
+	}
 }
 
 void MainWindow::updateActions()
@@ -417,7 +427,9 @@ void MainWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
 
 void MainWindow::writeSettings()
 {
-	QSettings settings(QApplication::applicationDirPath() + "/mocra.ini", QSettings::IniFormat);
+	QSettings settings(
+		QApplication::applicationDirPath() + "/" + QApplication::applicationName() + ".ini",
+		QSettings::IniFormat);
 
 	settings.beginGroup("MainWindow");
 	settings.setValue("geometry", saveGeometry());
@@ -436,7 +448,9 @@ void MainWindow::writeSettings()
 
 bool MainWindow::readSettings()
 {
-	QSettings settings(QApplication::applicationDirPath() + "/mocra.ini", QSettings::IniFormat);
+	QSettings settings(
+		QApplication::applicationDirPath() + "/" + QApplication::applicationName() + ".ini",
+		QSettings::IniFormat);
 
 	settings.beginGroup("MainWindow");
 	bool exists = settings.contains("geometry");
