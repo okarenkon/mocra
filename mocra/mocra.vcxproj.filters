@@ -77,6 +77,9 @@
     <CustomBuild Include="DetectDialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="TextDetector.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug\moc_MainWindow.cpp">
@@ -110,9 +113,6 @@
     </ClInclude>
     <ClInclude Include="LineDetector.h">
       <Filter>Image processing</Filter>
-    </ClInclude>
-    <ClInclude Include="TextDetector.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

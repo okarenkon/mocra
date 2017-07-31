@@ -81,6 +81,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)*.exe $(SolutionDir)mocra\$(ConfigurationName)
+copy $(TargetDir)*.pdb $(SolutionDir)mocra\$(ConfigurationName)
 copy $(TargetDir)*.config $(SolutionDir)mocra\$(ConfigurationName)
 copy $(TargetDir)*.dll $(SolutionDir)mocra\$(ConfigurationName)
 copy $(TargetDir)*.xml $(SolutionDir)mocra\$(ConfigurationName)

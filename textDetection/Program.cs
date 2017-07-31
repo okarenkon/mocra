@@ -114,11 +114,14 @@ namespace GoogleCloudVisionTextDetection
                 foreach (var response in result)
                 {
                     //Console.WriteLine("Text for image: " + imagePaths[i]);
-                    foreach (var text in response.TextAnnotations)
+                    if (response.TextAnnotations != null)
                     {
-                        //標準出力に認識結果を出力
-                        Console.WriteLine(text.Description);
-                        break;  //1行目で抜ける
+                        foreach (var text in response.TextAnnotations)
+                        {
+                            //標準出力に認識結果を出力
+                            Console.WriteLine(text.Description);
+                            break;  //1行目で抜ける
+                        }
                     }
                     i++;
                 }
